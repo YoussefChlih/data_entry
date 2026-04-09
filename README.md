@@ -1,123 +1,145 @@
-# 🚀 DÉMARRAGE RAPIDE - DataIngest Platform
+# Data Entry
 
-## Mode Démo (Pas besoin de Supabase)
+Application TypeScript dédiée à la saisie, validation et gestion d’enregistrements (data entry), avec une base de code structurée et des standards de qualité adaptés à un contexte entreprise.
 
-### ✨ La plus simple façon de commencer!
+## Objectifs
+
+- Fournir une interface et/ou une API permettant la création, modification, validation et consultation d’enregistrements.
+- Garantir la fiabilité des données via des règles de validation (côté client et/ou serveur).
+- Maintenir un code lisible, testable et évolutif (TypeScript, conventions, CI).
+
+## Périmètre fonctionnel (à adapter)
+
+- Authentification (optionnel)
+- Création / édition / suppression d’un enregistrement
+- Recherche, filtres, tri, pagination
+- Validation des champs et gestion des erreurs
+- Journalisation (optionnel)
+- Export (CSV/JSON) (optionnel)
+
+## Stack technique
+
+- Langage : TypeScript
+- Runtime : Node.js (version recommandée : >= 18)
+- Gestionnaire de paquets : npm (ou yarn/pnpm)
+- (À compléter) Framework : React / Next.js / NestJS / Express
+- (À compléter) Base de données : SQLite / PostgreSQL / MongoDB
+- (À compléter) Qualité : ESLint, Prettier, tests, CI
+
+## Prérequis
+
+- Node.js >= 18
+- npm >= 9
+
+Vérification :
+```bash
+node -v
+npm -v
+```
+
+## Installation
 
 ```bash
-# 1. Installation des dépendances
+git clone https://github.com/YoussefChlih/data_entry.git
+cd data_entry
 npm install
-
-# 2. Démarrer le serveur de développement
-npm run dev
-
-# 3. Ouvrir dans le navigateur
-# http://localhost:3000
 ```
 
-### 🧪 Tester avec les utilisateurs de démo
+## Configuration
 
-Une fois sur la page de login, **cliquez sur un bouton de test user**:
+Créer un fichier `.env` à la racine (si applicable) :
 
-| Bouton | Email | Mot de passe | Rôle |
-|--------|-------|--------------|------|
-| 🔵 Admin | admin@mentora.com | admin123 | Administrateur |
-| 🟢 Youssef | youssef@mentora.com | user123 | Data Entry |
-| 🟡 Amina | amina@mentora.com | user123 | Data Entry |
-| 🔴 Karim | karim@mentora.com | user123 | Data Entry |
-| 🟣 Salma | salma@mentora.com | user123 | Data Entry |
+```bash
+# Exemple (à adapter)
+NODE_ENV=development
+PORT=3000
 
-**Ce qui se passe?**
-1. App détecte que Supabase n'est pas configuré
-2. Bascule automatiquement en **mode démo local**
-3. Utilise les credentials en dur pour tester
-4. Tout fonctionne! ✅
+# Database
+DATABASE_URL=
 
----
-
-## Mode Production (Avec Supabase)
-
-### 🔧 Configurer Supabase
-
-Consultez le fichier **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)** pour:
-1. Créer un compte Supabase
-2. Obtenir les credentials
-3. Créer la table `users`
-4. Créer la fonction RPC `verify_password`
-5. Configurer les buckets de stockage
-
-### 📝 Remplir `.env.local`
-
-Une fois Supabase configuré, remplissez:
-
-```env
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGci...
+# Auth (optionnel)
+JWT_SECRET=
 ```
 
-### Redémarrer le serveur
+Remarque : ne jamais committer les secrets. Utiliser un `.env.example` si nécessaire.
 
+## Lancer le projet
+
+Développement :
 ```bash
 npm run dev
 ```
 
-Maintenant l'app utilise Supabase pour l'authentification! 🎉
-
----
-
-## 📚 Documentation Complète
-
-- **[instructions.md](./instructions.md)** - Documentation technique complète
-- **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)** - Guide de configuration Supabase
-- **[README.md](./README.md)** - Vue d'ensemble du projet
-
----
-
-## ❓ Questions?
-
-### Erreur 400 (Bad Request)?
-→ Consultez [SOLUTION À L'ERREUR 400](./instructions.md#solution-à-lerreur-400-bad-request)
-
-### Comment fonctionne le mode démo?
-→ Consultez [MODE DÉMO](./instructions.md#solution-à-lerreur-400-bad-request)
-
-### Besoin d'aide avec Supabase?
-→ Consultez [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) > Troubleshooting
-
----
-
-## 🎯 Commandes Utiles
-
+Build :
 ```bash
-# Démarrer en développement
-npm run dev
-
-# Compiler pour production
 npm run build
-
-# Prévisualiser le build
-npm run preview
-
-# Vérifier les erreurs TypeScript
-npm run lint
-
-# Nettoyer le dossier dist
-npm run clean
 ```
 
----
+Production :
+```bash
+npm run start
+```
 
-## 🎨 Features
+## Scripts
 
-- ✅ **Authentification Sécurisée** (Supabase ou mode démo)
-- ✅ **Design Modern** (Blue/Slate theme)
-- ✅ **Responsive** (Mobile, tablet, desktop)
-- ✅ **Gestion Multi-Utilisateurs** (Admin et Data Entry)
-- ✅ **Dashboard Admin** avec métriques et stats
-- ✅ **Formulaire Complexe** pour saisie de données
-- ✅ **Gestion de Documents** (CRUD)
-- ✅ **Export/Import** de données
+- `npm run dev` : lance le projet en mode développement
+- `npm run build` : compile/build pour production
+- `npm run start` : démarre la version compilée
+- `npm run lint` : analyse statique du code
+- `npm run test` : exécute les tests
 
----
+(Adapter la liste à ce qui existe réellement dans `package.json`.)
 
-**Prêt à commencer? Lancez `npm run dev` et cliquez sur un test user!** 🚀
+## Structure du projet
+
+Exemple de structure (à adapter au repo) :
+
+- `src/` : code source
+  - `components/` : composants UI (si front)
+  - `pages/` ou `app/` : routing (Next.js)
+  - `routes/` / `controllers/` : endpoints (si backend)
+  - `services/` : logique métier / accès données
+  - `lib/` : utilitaires partagés
+  - `types/` : types et contrats TypeScript
+- `tests/` : tests unitaires/integration
+- `public/` : assets statiques (si front)
+
+## Qualité et standards
+
+- TypeScript strict (recommandé)
+- Linting et formatage cohérents (ESLint/Prettier)
+- Revue de code via PR
+- CI : lint + tests + build sur chaque push/PR (recommandé)
+
+## Tests
+
+```bash
+npm run test
+```
+
+## Déploiement (optionnel)
+
+Décrire l’approche de déploiement cible :
+- Front : Vercel / Netlify / serveur Node
+- Backend : Docker / VM / PaaS
+- Variables d’environnement : via plateforme (secrets)
+
+## Roadmap (optionnel)
+
+- [ ] Stabiliser les règles de validation
+- [ ] Ajouter tests unitaires sur la logique métier
+- [ ] Ajouter CI GitHub Actions (lint/test/build)
+- [ ] Ajouter documentation API (OpenAPI) si backend
+
+## Contribution
+
+- Créer une branche : `feature/<nom>` ou `fix/<nom>`
+- Ouvrir une Pull Request avec :
+  - description claire
+  - captures si UI
+  - étapes de test
+  - lien vers issue si applicable
+
+## Licence
+
+À définir.
