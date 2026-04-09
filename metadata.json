@@ -1,0 +1,5 @@
+{
+  "name": "DataIngest",
+  "description": "A data entry platform for structuring educational PDF content into JSON format.",
+  "requestFramePermissions": []
+}
