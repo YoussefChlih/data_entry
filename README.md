@@ -8,23 +8,21 @@ Application TypeScript dédiée à la saisie, validation et gestion d’enregist
 - Garantir la fiabilité des données via des règles de validation (côté client et/ou serveur).
 - Maintenir un code lisible, testable et évolutif (TypeScript, conventions, CI).
 
-## Périmètre fonctionnel (à adapter)
+## Périmètre fonctionnel 
 
-- Authentification (optionnel)
+- Authentification 
 - Création / édition / suppression d’un enregistrement
-- Recherche, filtres, tri, pagination
 - Validation des champs et gestion des erreurs
-- Journalisation (optionnel)
-- Export (CSV/JSON) (optionnel)
+- Export (CSV/JSON) 
 
 ## Stack technique
 
 - Langage : TypeScript
 - Runtime : Node.js (version recommandée : >= 18)
 - Gestionnaire de paquets : npm (ou yarn/pnpm)
-- (À compléter) Framework : React / Next.js / NestJS / Express
-- (À compléter) Base de données : SQLite / PostgreSQL / MongoDB
-- (À compléter) Qualité : ESLint, Prettier, tests, CI
+-  Framework : React / Next.js / NestJS / Express
+-  Base de données : SQLite / PostgreSQL / MongoDB
+-  Qualité : ESLint, Prettier, tests, CI
 
 ## Prérequis
 
@@ -47,21 +45,14 @@ npm install
 
 ## Configuration
 
-Créer un fichier `.env` à la racine (si applicable) :
+Créer un fichier `.env` à la racine :
 
 ```bash
-# Exemple (à adapter)
-NODE_ENV=development
-PORT=3000
-
-# Database
-DATABASE_URL=
-
-# Auth (optionnel)
-JWT_SECRET=
+# Exemple 
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=
 ```
 
-Remarque : ne jamais committer les secrets. Utiliser un `.env.example` si nécessaire.
 
 ## Lancer le projet
 
@@ -117,20 +108,6 @@ Exemple de structure (à adapter au repo) :
 npm run test
 ```
 
-## Déploiement (optionnel)
-
-Décrire l’approche de déploiement cible :
-- Front : Vercel / Netlify / serveur Node
-- Backend : Docker / VM / PaaS
-- Variables d’environnement : via plateforme (secrets)
-
-## Roadmap (optionnel)
-
-- [ ] Stabiliser les règles de validation
-- [ ] Ajouter tests unitaires sur la logique métier
-- [ ] Ajouter CI GitHub Actions (lint/test/build)
-- [ ] Ajouter documentation API (OpenAPI) si backend
-
 ## Contribution
 
 - Créer une branche : `feature/<nom>` ou `fix/<nom>`
@@ -140,6 +117,4 @@ Décrire l’approche de déploiement cible :
   - étapes de test
   - lien vers issue si applicable
 
-## Licence
 
-À définir.
