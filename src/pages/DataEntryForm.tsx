@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Plus, Trash2, Save, Eye, FileText, ChevronRight } from 'lucide-react';
+import { Upload, Plus, Trash2, Save, Eye, FileText, ChevronRight, Copy } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { CYCLES, NIVEAUX_SCOLAIRES, MATIERES_PAR_CYCLE, THEMES_PAR_MATIERE } from '../constants';
 import { DocumentData, DocumentStructure, CourseTuple } from '../types';
@@ -21,6 +21,7 @@ export function DataEntryForm({ onSave, initialData }: DataEntryFormProps) {
   const [matiere, setMatiere] = useState(initialData?.matiere || '');
   const [structure, setStructure] = useState<DocumentStructure>(initialData?.structure || {});
   const [showPreview, setShowPreview] = useState(false);
+  const [duplicateModal, setDuplicateModal] = useState<{ sourceUnit: string; subSubject: string } | null>(null);
 
   // Auto-generate unit names based on count
   const addUnit = () => {
@@ -93,6 +94,25 @@ export function DataEntryForm({ onSave, initialData }: DataEntryFormProps) {
     });
   };
 
+  const duplicateSubSubject = (sourceUnit: string, subSubject: string, targetUnit: string) => {
+    if (!sourceUnit || !subSubject || !targetUnit) return;
+    
+    setStructure(prev => {
+      const sourceCourses = prev[sourceUnit][subSubject];
+      const coursesCopy = sourceCourses.map(course => [...course] as CourseTuple);
+      
+      return {
+        ...prev,
+        [targetUnit]: {
+          ...prev[targetUnit],
+          [subSubject]: prev[targetUnit][subSubject] ? 
+            [...prev[targetUnit][subSubject], ...coursesCopy] : 
+            coursesCopy
+        }
+      };
+    });
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -131,23 +151,11 @@ export function DataEntryForm({ onSave, initialData }: DataEntryFormProps) {
 
   return (
     <div className="max-w-5xl mx-auto p-8 pb-32">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            {initialData ? 'Modifier le document' : 'Nouvelle saisie de données'}
-          </h1>
-          <p className="text-slate-500 mt-1">Extrayez et structurez les données des documents PDF.</p>
-        </div>
-        <div className="flex gap-3">
-          <button 
-            onClick={() => setShowPreview(true)}
-            disabled={!fileName || !niveau || !matiere || !cycle}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 hover:text-blue-600 transition-colors disabled:opacity-50 font-medium"
-          >
-            <Eye size={18} />
-            Vérifier les données
-          </button>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-900">
+          {initialData ? 'Modifier le document' : 'Nouvelle saisie de données'}
+        </h1>
+        <p className="text-slate-500 mt-1">Extrayez et structurez les données des documents PDF.</p>
       </div>
 
       <div className="space-y-6">
@@ -252,18 +260,11 @@ export function DataEntryForm({ onSave, initialData }: DataEntryFormProps) {
 
         {/* Step 3: Structure Builder */}
         <div className={cn("transition-opacity duration-300", (!matiere || !niveau) ? "opacity-50 pointer-events-none" : "opacity-100")}>
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4">
             <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
               <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-sm">3</span>
               Structure du document
             </h2>
-            <button 
-              onClick={addUnit}
-              className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium text-sm"
-            >
-              <Plus size={16} />
-              Ajouter une Unité
-            </button>
           </div>
 
           <div className="space-y-6">
@@ -293,13 +294,22 @@ export function DataEntryForm({ onSave, initialData }: DataEntryFormProps) {
                           <ChevronRight size={16} className="text-slate-400" />
                           {subSubject}
                         </h4>
-                        <button 
-                          onClick={() => removeSubSubject(unitName, subSubject)}
-                          className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
-                          title="Supprimer le thème"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => setDuplicateModal({ sourceUnit: unitName, subSubject })}
+                            className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-md transition-colors"
+                            title="Dupliquer le thème"
+                          >
+                            <Copy size={16} />
+                          </button>
+                          <button 
+                            onClick={() => removeSubSubject(unitName, subSubject)}
+                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                            title="Supprimer le thème"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
 
                       <div className="space-y-2 pl-6 border-l-2 border-slate-100">
@@ -361,11 +371,9 @@ export function DataEntryForm({ onSave, initialData }: DataEntryFormProps) {
                       defaultValue=""
                     >
                       <option value="" disabled>+ Ajouter un thème...</option>
-                      {availableThemes
-                        .filter(sub => !unitData[sub]) // don't show already added
-                        .map(sub => (
-                          <option key={sub} value={sub}>{sub}</option>
-                        ))}
+                      {availableThemes.map(sub => (
+                        <option key={sub} value={sub}>{sub}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -384,8 +392,82 @@ export function DataEntryForm({ onSave, initialData }: DataEntryFormProps) {
                 </button>
               </div>
             )}
+
+            {Object.keys(structure).length > 0 && (
+              <div className="flex items-center justify-center mt-8 pt-6 border-t border-slate-200">
+                <button 
+                  onClick={addUnit}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                >
+                  <Plus size={18} />
+                  Ajouter une Unité
+                </button>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Step 4: Preview and Validation at bottom */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-sm">4</span>
+            Vérification et validation
+          </h2>
+          <div className="flex flex-col items-center gap-4 py-8 text-center">
+            <p className="text-slate-600">
+              {!fileName || !niveau || !matiere || !cycle 
+                ? 'Complétez tous les champs pour procéder à la vérification.' 
+                : 'Tous les champs obligatoires sont remplis. Vous pouvez vérifier et valider votre saisie.'}
+            </p>
+            <button 
+              onClick={() => setShowPreview(true)}
+              disabled={!fileName || !niveau || !matiere || !cycle}
+              className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium shadow-sm shadow-blue-600/20"
+            >
+              <Eye size={18} />
+              Vérifier et Valider
+            </button>
+          </div>
+        </div>
+
+        {/* Duplicate Modal */}
+        {duplicateModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-6">
+              <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                Dupliquer le thème "{duplicateModal.subSubject}"
+              </h3>
+              <p className="text-slate-600 text-sm mb-4">
+                Sélectionnez l'unité de destination où vous voulez copier ce thème :
+              </p>
+              <div className="space-y-2 mb-6 max-h-64 overflow-y-auto">
+                {Object.entries(structure).map(([unit]) => (
+                  <button
+                    key={unit}
+                    onClick={() => {
+                      duplicateSubSubject(duplicateModal.sourceUnit, duplicateModal.subSubject, unit);
+                      setDuplicateModal(null);
+                    }}
+                    className={cn(
+                      "w-full p-3 text-left rounded-lg border transition-colors font-medium text-sm",
+                      unit === duplicateModal.sourceUnit
+                        ? "bg-blue-50 border-blue-200 text-blue-900"
+                        : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                    )}
+                  >
+                    {unit} {unit === duplicateModal.sourceUnit && "(même unité)"}
+                  </button>
+                ))}
+              </div>
+              <button 
+                onClick={() => setDuplicateModal(null)}
+                className="w-full px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {showPreview && (
